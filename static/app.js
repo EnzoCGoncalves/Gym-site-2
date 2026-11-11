@@ -9,7 +9,7 @@ const LIGHT = ['lat_raise', 'rear_delt', 'front_raise', 'calf', 'calf_seated', '
 const ROT = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado', hipertrofia: 'Hipertrofia', forca: 'Força + hipertrofia', definicao: 'Definição' };
 
 let DATA, EX = {}, EQ_NOME = {}, TOTAL_EQ = 0;
-let equip = new Set(), plan, aval = null, picker = null, timer = null;
+let equip = new Set(), plan, aval = null, picker = null, timer = null, notaAnt = null;
 
 async function api(url, method = 'GET', body) {
   const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -45,6 +45,27 @@ function tagsEx(e, comMusculo = true) {
     ${disponivel(e) ? '' : '<span class="tag red">Não tem na sua academia</span>'}</div>`;
 }
 
+// Anima um número de `de` até `ate`
+function contar(el, de, ate, ms = 700) {
+  if (!el) return;
+  if (de === ate || matchMedia('(prefers-reduced-motion: reduce)').matches) return (el.textContent = ate);
+  const t0 = performance.now();
+  clearTimeout(el._fim); el._fim = setTimeout(() => (el.textContent = ate), ms + 300);  // garante o valor final
+  (function passo(t) {
+    const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = Math.round(de + (ate - de) * e);
+    if (k < 1 && el.isConnected) requestAnimationFrame(passo);
+  })(t0);
+}
+
+let revelarOk = false;
+const revelar = new IntersectionObserver(es => {
+  revelarOk = true;
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revelar.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+// Se o navegador não disparar o observador, mostra tudo para nada ficar invisível
+setTimeout(() => { if (!revelarOk) $$('.reveal').forEach(el => el.classList.add('in')); }, 2500);
+
 /* ------------------------------------------------------------ navegação */
 function rota() {
   let v = location.hash.slice(1);
@@ -52,6 +73,10 @@ function rota() {
   VIEWS.forEach(n => ($('#v-' + n).hidden = n !== v));
   $$('#nav a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + v));
   window.scrollTo(0, 0);
+  const el = $('#v-' + v);
+  el.classList.add('enter');
+  clearTimeout(rota.t); rota.t = setTimeout(() => el.classList.remove('enter'), 1400);
+  if (v === 'inicio') { contar($('#st-ex'), 0, DATA.exercicios.length, 1400); contar($('#st-eq'), 0, TOTAL_EQ, 1400); }
   if (v === 'gerar') $('#equip-resumo').textContent = `Usando ${equip.size} de ${TOTAL_EQ} equipamentos da sua academia.`;
   if (v === 'editor') { renderEditor(); avaliarAgora(); }
   if (v === 'treinos') carregarTreinos();
@@ -68,7 +93,7 @@ function renderEditor() {
   $('#editor-dias').innerHTML = plan.dias.map((d, di) => `
     <section class="day" data-d="${di}">
       <header class="day-head">
-        <span class="day-num">${di + 1}</span>
+        <span class="day-num">${String(di + 1).padStart(2, '0')}</span>
         <input class="day-name" data-f="dia-nome" maxlength="40" value="${esc(d.nome)}" aria-label="Nome do dia">
         <span class="day-time" id="tempo-${di}"></span>
         <button class="icon-btn" data-a="del-dia" title="Remover dia">✕</button>
@@ -122,16 +147,18 @@ function renderAval() {
   pintarTempos();
   const el = $('#aval');
   if (aval.vazio) {
+    notaAnt = null;
     el.innerHTML = `<h3>Avaliação</h3><p class="muted">Adicione exercícios ao treino e a nota aparece aqui, atualizada em tempo real.</p>`;
     return;
   }
-  const C = 2 * Math.PI * 50;
+  const C = 2 * Math.PI * 50, de = notaAnt ?? 0;
+  el.classList.toggle('first', notaAnt === null);
   const nomes = { critico: 'Crítico', alerta: 'Atenção', dica: 'Dica', ok: 'Ponto forte' };
   el.innerHTML = `
     <div class="score">
       <div class="ring"><svg width="112" height="112" viewBox="0 0 112 112">
-        <circle class="bg" cx="56" cy="56" r="50"/><circle class="fg" cx="56" cy="56" r="50" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - aval.nota / 100)}"/></svg>
-        <div class="score-num">${aval.nota}</div></div>
+        <circle class="bg" cx="56" cy="56" r="50"/><circle class="fg" cx="56" cy="56" r="50" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - aval.nota / 100)}" style="--from:${C * (1 - de / 100)}"/></svg>
+        <div class="score-num">${de}</div></div>
       <div><div class="muted">Nota do treino</div><div class="score-label">${aval.conceito}</div>
         <div class="muted" style="font-size:13px">${ROT[plan.nivel]} · ${ROT[plan.objetivo]}</div></div>
     </div>
@@ -153,6 +180,8 @@ function renderAval() {
     <h4>Tempo por sessão</h4>
     ${aval.dias.map(d => `<div class="daytime"><span>${esc(d.nome)}</span><span>${d.exercicios ? `~${d.minutos} min · ${d.exercicios} exercícios` : 'vazio'}</span></div>`).join('')}
     <p class="legend">Inclui aquecimento, execução, descansos e troca de aparelho.</p>`;
+  contar($('.score-num', el), de, aval.nota, 900);
+  notaAnt = aval.nota;
 }
 
 /* ------------------------------------------------- seletor de exercícios */
@@ -358,13 +387,12 @@ window.addEventListener('hashchange', rota);
     const [dados, eq] = await Promise.all([api('/api/dados'), api('/api/equipamentos')]);
     DATA = dados; equip = new Set(eq);
   } catch (e) {
-    $('main').innerHTML = '<div class="card"><h3>Servidor fora do ar</h3><p>Inicie o site com <b>python app.py</b> e recarregue a página.</p></div>';
+    $('main').innerHTML = '<div class="card" style="margin-top:40px"><h3>Servidor fora do ar</h3><p>Inicie o site com <b>python app.py</b> e recarregue a página.</p></div>';
     return;
   }
   DATA.exercicios.forEach(e => (EX[e.id] = e));
   DATA.equipamentos.forEach(g => g.itens.forEach(i => { EQ_NOME[i.id] = i.nome; TOTAL_EQ++; }));
-  $('#st-ex').textContent = DATA.exercicios.length;
-  $('#st-eq').textContent = TOTAL_EQ;
+  $$('.reveal').forEach(el => revelar.observe(el));
   const opts = '<option value="">Todos os músculos</option>' + Object.entries(DATA.musculos).map(([k, n]) => `<option value="${k}">${n}</option>`).join('');
   $('#bib-musculo').innerHTML = opts; $('#pk-musculo').innerHTML = opts;
   $('#prioridades').innerHTML = Object.entries(DATA.musculos).filter(([k]) => !['antebraco', 'lombar', 'delt_ant'].includes(k))

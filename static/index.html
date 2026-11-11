@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FORJA — Monte e avalie seu treino</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -23,36 +23,66 @@
 
 <main>
   <!-- INÍCIO -->
-  <section class="view" id="v-inicio">
+  <section class="view" id="v-inicio" hidden>
     <div class="hero">
-      <p class="eyebrow">Treino baseado em ciência</p>
-      <h1>Monte. Avalie.<br><em>Cresça.</em></h1>
+      <a class="badge" href="#gerar"><i></i>Treino baseado em ciência</a>
+      <h1><span>Monte.</span><span>Avalie.</span><span class="hl">Cresça.</span></h1>
       <p class="lead">Gere um treino sob medida para o seu tempo, nível e para os equipamentos que a sua academia realmente tem — ou monte o seu e receba uma nota de 0 a 100 com tudo o que dá para melhorar.</p>
       <div class="hero-cta">
-        <a class="btn primary big" href="#gerar">Gerar meu treino</a>
-        <a class="btn outline big" href="#editor">Avaliar um treino</a>
-      </div>
-      <div class="stats">
-        <div><b id="st-ex">—</b><span>exercícios</span></div>
-        <div><b id="st-eq">—</b><span>equipamentos</span></div>
-        <div><b>5</b><span>critérios de avaliação</span></div>
+        <a class="btn glow big" href="#gerar">Gerar meu treino <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        <a class="btn outline big" href="#editor">Avaliar um treino <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
       </div>
     </div>
-    <div class="cards3">
-      <article class="card"><h3>Gerador inteligente</h3><p>Escolhe a melhor divisão para os seus dias, ajusta séries ao tempo de treino e só usa o que existe na sua academia.</p></article>
-      <article class="card"><h3>Avaliação completa</h3><p>Volume semanal por músculo, frequência, duração das sessões, qualidade dos exercícios e equilíbrio do treino.</p></article>
-      <article class="card"><h3>Sem a máquina? Troque</h3><p>Cada exercício tem substitutos do mesmo movimento. Um clique em “Trocar” mostra as opções disponíveis para você.</p></article>
+
+    <div class="trio">
+      <section class="tech reveal">
+        <div class="tech-head"><span class="label">[ Base de dados ]</span><div class="sq"><i></i><i></i><i></i></div></div>
+        <div class="stat"><small>Exercícios mapeados</small><b id="st-ex">0</b><em>LIVE</em>
+          <p>Cada um com músculos, equipamento e nota de qualidade para hipertrofia.</p></div>
+        <div class="stat"><small>Equipamentos e máquinas</small><b id="st-eq">0</b>
+          <p>Marque só o que a sua academia tem.</p></div>
+        <a class="btn line" href="#academia">Configurar academia <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="square"/></svg></a>
+      </section>
+
+      <section class="visual reveal d1">
+        <div class="vis-top">
+          <div class="plate"><small>Avaliação em tempo real</small><b>Nota do treino</b></div>
+          <a class="sq-btn" href="#editor" aria-label="Abrir o avaliador"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17" stroke-linecap="square"/></svg></a>
+        </div>
+        <div class="demo" aria-hidden="true">
+          <div class="demo-ring"><svg width="150" height="150" viewBox="0 0 112 112"><circle class="bg" cx="56" cy="56" r="50"/><circle class="fg" cx="56" cy="56" r="50"/></svg><b>97</b></div>
+          <div class="demo-bars">
+            <div>Volume semanal<i></i></div><div>Frequência<i></i></div><div>Seleção e ordem<i></i></div><div>Equilíbrio<i></i></div>
+          </div>
+        </div>
+        <div>
+          <div class="strip"><span>Volume</span><span>Frequência</span><span>Tempo</span></div>
+          <div class="quote">Cada alteração no treino recalcula a nota na hora e mostra exatamente o que falta para ele render mais.</div>
+        </div>
+      </section>
+
+      <section class="index reveal d2">
+        <div class="index-head"><span>Índice</span><div class="ticks"><i></i><i></i><i></i></div></div>
+        <a class="row-link" href="#gerar"><div><small>01</small><b>Gerar treino</b></div><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="square"/></svg></a>
+        <a class="row-link" href="#editor"><div><small>02</small><b>Montar e avaliar</b></div><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="square"/></svg></a>
+        <a class="row-link" href="#exercicios"><div><small>03</small><b>Biblioteca de exercícios</b></div><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="square"/></svg></a>
+        <a class="row-link" href="#treinos"><div><small>04</small><b>Meus treinos</b></div><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="square"/></svg></a>
+      </section>
     </div>
-    <div class="card principles">
-      <h3>O que faz um treino funcionar</h3>
-      <ul>
-        <li><b>Volume certo:</b> cerca de 10 a 20 séries difíceis por músculo por semana (menos para iniciantes).</li>
-        <li><b>Frequência:</b> cada músculo pelo menos 2x por semana rende mais do que tudo num dia só.</li>
-        <li><b>Intensidade:</b> termine as séries a 1–3 repetições da falha. Série fácil não conta.</li>
-        <li><b>Descanso:</b> 2 a 3 min nos compostos pesados, 1 a 1,5 min nos isolados.</li>
-        <li><b>Progressão:</b> ao bater o topo da faixa de repetições em todas as séries, suba a carga.</li>
-        <li><b>Duração:</b> 45 a 90 min bem feitos valem mais do que 2 horas de treino arrastado.</li>
-      </ul>
+
+    <div class="marquee reveal" aria-hidden="true"><div>
+      <span>Peito</span><span>Costas</span><span>Ombros</span><span>Bíceps</span><span>Tríceps</span><span>Quadríceps</span><span>Posterior</span><span>Glúteos</span><span>Panturrilha</span><span>Abdômen</span>
+      <span>Peito</span><span>Costas</span><span>Ombros</span><span>Bíceps</span><span>Tríceps</span><span>Quadríceps</span><span>Posterior</span><span>Glúteos</span><span>Panturrilha</span><span>Abdômen</span>
+    </div></div>
+
+    <div class="sec-head reveal"><span class="label">[ Princípios ]</span><h2>O que faz um treino funcionar</h2></div>
+    <div class="pgrid reveal">
+      <div class="pcell"><small>01</small><h3>Volume certo</h3><p>Cerca de 10 a 20 séries difíceis por músculo por semana — menos para iniciantes.</p></div>
+      <div class="pcell"><small>02</small><h3>Frequência</h3><p>Cada músculo pelo menos 2x por semana rende mais do que tudo num dia só.</p></div>
+      <div class="pcell"><small>03</small><h3>Intensidade</h3><p>Termine as séries a 1–3 repetições da falha. Série fácil não conta.</p></div>
+      <div class="pcell"><small>04</small><h3>Descanso</h3><p>2 a 3 min nos compostos pesados, 1 a 1,5 min nos isolados.</p></div>
+      <div class="pcell"><small>05</small><h3>Progressão</h3><p>Ao bater o topo da faixa de repetições em todas as séries, suba a carga.</p></div>
+      <div class="pcell"><small>06</small><h3>Duração</h3><p>45 a 90 min bem feitos valem mais do que 2 horas de treino arrastado.</p></div>
     </div>
   </section>
 

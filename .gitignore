@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+gym.db
+.venv/
+venv/
+creative-agency-template.aura.build/

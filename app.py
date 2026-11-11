@@ -20,6 +20,7 @@ DB = os.path.join(BASE, "gym.db")
 PORT = int(os.environ.get("PORT", 5000))
 
 app = Flask(__name__, static_folder=os.path.join(BASE, "static"), static_url_path="/static")
+app.json.sort_keys = False  # mantém a ordem dos músculos definida em exercises.py
 
 
 def db():
