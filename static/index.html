@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FORJA — Monte e avalie seu treino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="logo" href="#inicio"><span class="logo-mark">F</span>FORJA</a>
+  <nav id="nav">
+    <a href="#inicio">Início</a>
+    <a href="#gerar">Gerar treino</a>
+    <a href="#editor">Montar e avaliar</a>
+    <a href="#treinos">Meus treinos</a>
+    <a href="#exercicios">Exercícios</a>
+    <a href="#academia">Minha academia</a>
+  </nav>
+</header>
+
+<main>
+  <!-- INÍCIO -->
+  <section class="view" id="v-inicio">
+    <div class="hero">
+      <p class="eyebrow">Treino baseado em ciência</p>
+      <h1>Monte. Avalie.<br><em>Cresça.</em></h1>
+      <p class="lead">Gere um treino sob medida para o seu tempo, nível e para os equipamentos que a sua academia realmente tem — ou monte o seu e receba uma nota de 0 a 100 com tudo o que dá para melhorar.</p>
+      <div class="hero-cta">
+        <a class="btn primary big" href="#gerar">Gerar meu treino</a>
+        <a class="btn outline big" href="#editor">Avaliar um treino</a>
+      </div>
+      <div class="stats">
+        <div><b id="st-ex">—</b><span>exercícios</span></div>
+        <div><b id="st-eq">—</b><span>equipamentos</span></div>
+        <div><b>5</b><span>critérios de avaliação</span></div>
+      </div>
+    </div>
+    <div class="cards3">
+      <article class="card"><h3>Gerador inteligente</h3><p>Escolhe a melhor divisão para os seus dias, ajusta séries ao tempo de treino e só usa o que existe na sua academia.</p></article>
+      <article class="card"><h3>Avaliação completa</h3><p>Volume semanal por músculo, frequência, duração das sessões, qualidade dos exercícios e equilíbrio do treino.</p></article>
+      <article class="card"><h3>Sem a máquina? Troque</h3><p>Cada exercício tem substitutos do mesmo movimento. Um clique em “Trocar” mostra as opções disponíveis para você.</p></article>
+    </div>
+    <div class="card principles">
+      <h3>O que faz um treino funcionar</h3>
+      <ul>
+        <li><b>Volume certo:</b> cerca de 10 a 20 séries difíceis por músculo por semana (menos para iniciantes).</li>
+        <li><b>Frequência:</b> cada músculo pelo menos 2x por semana rende mais do que tudo num dia só.</li>
+        <li><b>Intensidade:</b> termine as séries a 1–3 repetições da falha. Série fácil não conta.</li>
+        <li><b>Descanso:</b> 2 a 3 min nos compostos pesados, 1 a 1,5 min nos isolados.</li>
+        <li><b>Progressão:</b> ao bater o topo da faixa de repetições em todas as séries, suba a carga.</li>
+        <li><b>Duração:</b> 45 a 90 min bem feitos valem mais do que 2 horas de treino arrastado.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- GERAR -->
+  <section class="view" id="v-gerar" hidden>
+    <h2>Gerar treino</h2>
+    <p class="sub">Responda 5 perguntas e receba um treino completo, já avaliado.</p>
+    <form class="card form" id="form-gerar">
+      <div class="field"><label>Objetivo</label>
+        <div class="seg" data-name="objetivo">
+          <button type="button" data-v="hipertrofia" class="on">Hipertrofia</button>
+          <button type="button" data-v="forca">Força + hipertrofia</button>
+          <button type="button" data-v="definicao">Definição</button>
+        </div></div>
+      <div class="field"><label>Nível de experiência</label>
+        <div class="seg" data-name="nivel">
+          <button type="button" data-v="iniciante">Iniciante <small>menos de 1 ano</small></button>
+          <button type="button" data-v="intermediario" class="on">Intermediário <small>1 a 3 anos</small></button>
+          <button type="button" data-v="avancado">Avançado <small>mais de 3 anos</small></button>
+        </div></div>
+      <div class="field"><label>Dias por semana</label>
+        <div class="seg" data-name="dias">
+          <button type="button" data-v="2">2</button><button type="button" data-v="3">3</button>
+          <button type="button" data-v="4" class="on">4</button><button type="button" data-v="5">5</button>
+          <button type="button" data-v="6">6</button>
+        </div></div>
+      <div class="field"><label>Tempo por treino</label>
+        <div class="seg" data-name="tempo">
+          <button type="button" data-v="30">30 min</button><button type="button" data-v="45">45 min</button>
+          <button type="button" data-v="60" class="on">60 min</button><button type="button" data-v="75">75 min</button>
+          <button type="button" data-v="90">90 min</button>
+        </div></div>
+      <div class="field"><label>Músculos prioritários <small>opcional, até 3</small></label>
+        <div class="chips" id="prioridades"></div></div>
+      <div class="equip-resumo">
+        <span id="equip-resumo"></span>
+        <a href="#academia">Ajustar equipamentos</a>
+      </div>
+      <button class="btn primary big" type="submit">Gerar treino</button>
+    </form>
+  </section>
+
+  <!-- EDITOR -->
+  <section class="view" id="v-editor" hidden>
+    <div class="editor-top">
+      <input id="plano-nome" class="title-input" maxlength="60" aria-label="Nome do treino">
+      <div class="editor-actions">
+        <button class="btn outline" data-a="novo">Novo</button>
+        <button class="btn outline" data-a="imprimir">Imprimir</button>
+        <button class="btn primary" data-a="salvar">Salvar</button>
+      </div>
+    </div>
+    <div class="editor-meta">
+      <label>Nível <select id="plano-nivel">
+        <option value="iniciante">Iniciante</option><option value="intermediario">Intermediário</option><option value="avancado">Avançado</option>
+      </select></label>
+      <label>Objetivo <select id="plano-objetivo">
+        <option value="hipertrofia">Hipertrofia</option><option value="forca">Força + hipertrofia</option><option value="definicao">Definição</option>
+      </select></label>
+      <span id="plano-agenda" class="muted"></span>
+    </div>
+    <div id="plano-avisos"></div>
+    <div class="editor-grid">
+      <div>
+        <div id="editor-dias"></div>
+        <button class="btn outline" data-a="add-dia">+ Adicionar dia de treino</button>
+        <div class="card tips">
+          <h3>Como executar este treino</h3>
+          <ul>
+            <li>Faça 1–2 séries leves de aquecimento antes do primeiro exercício pesado de cada músculo.</li>
+            <li>Leve cada série até sobrarem 1–2 repetições “no tanque” (iniciantes: 2–3).</li>
+            <li>Progressão dupla: use a mesma carga até atingir o topo da faixa de repetições em todas as séries, depois aumente a carga.</li>
+            <li>A cada 6–8 semanas, faça uma semana leve (metade das séries) se estiver acumulando cansaço.</li>
+            <li>Sem proteína (1,6–2,2 g/kg) e 7–9 h de sono, nenhum treino entrega o resultado máximo.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="aval" id="aval"></aside>
+    </div>
+  </section>
+
+  <!-- MEUS TREINOS -->
+  <section class="view" id="v-treinos" hidden>
+    <h2>Meus treinos</h2>
+    <p class="sub">Treinos salvos neste computador.</p>
+    <div id="lista-treinos" class="grid-treinos"></div>
+  </section>
+
+  <!-- EXERCÍCIOS -->
+  <section class="view" id="v-exercicios" hidden>
+    <h2>Biblioteca de exercícios</h2>
+    <p class="sub">Qualidade para hipertrofia: ★★★ excelente, ★★ bom, ★ aceitável.</p>
+    <div class="filters">
+      <input id="bib-busca" type="search" placeholder="Buscar exercício...">
+      <select id="bib-musculo"></select>
+      <label class="check"><input type="checkbox" id="bib-disp"> Só os que tenho na academia</label>
+    </div>
+    <div id="bib-lista" class="bib"></div>
+  </section>
+
+  <!-- ACADEMIA -->
+  <section class="view" id="v-academia" hidden>
+    <h2>Minha academia</h2>
+    <p class="sub">Marque o que existe na sua academia. O gerador e as sugestões de troca usam apenas esses equipamentos. Salvo automaticamente.</p>
+    <div class="presets" id="presets"></div>
+    <div id="equip-grupos"></div>
+  </section>
+</main>
+
+<!-- Modal de escolha de exercício -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <header><h3 id="modal-titulo">Adicionar exercício</h3><button class="icon-btn" data-a="fechar-modal" aria-label="Fechar">✕</button></header>
+    <div class="filters">
+      <input id="pk-busca" type="search" placeholder="Buscar...">
+      <select id="pk-musculo"></select>
+      <label class="check"><input type="checkbox" id="pk-disp" checked> Só os que tenho</label>
+    </div>
+    <div id="pk-lista" class="pk-lista"></div>
+  </div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
